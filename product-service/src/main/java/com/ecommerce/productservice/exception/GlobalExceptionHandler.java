@@ -59,6 +59,14 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(400, "Malformed or missing request data"));
     }
 
+    @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatch(
+            org.springframework.web.method.annotation.MethodArgumentTypeMismatchException ex) {
+        log.warn("Type mismatch on parameter '{}' with value '{}'", ex.getName(), ex.getValue());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ErrorResponse.of(404, "Resource not found"));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
         log.error("Unexpected error", ex);
