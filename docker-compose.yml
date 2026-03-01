@@ -236,7 +236,7 @@ services:
       cart-db:
         condition: service_healthy
       product-service:
-        condition: service_healthy
+        condition: service_started
     networks:
       - ecommerce-net
     restart: on-failure
@@ -334,11 +334,11 @@ services:
       order-db:
         condition: service_healthy
       product-service:
-        condition: service_healthy
+        condition: service_started
       payment-service:
-        condition: service_healthy
+        condition: service_started
       notification-service:
-        condition: service_healthy
+        condition: service_started
     networks:
       - ecommerce-net
     restart: on-failure
@@ -366,17 +366,17 @@ services:
           memory: 256M
     depends_on:
       user-service:
-        condition: service_healthy
+        condition: service_started
       product-service:
-        condition: service_healthy
+        condition: service_started
       cart-service:
-        condition: service_healthy
+        condition: service_started
       order-service:
-        condition: service_healthy
+        condition: service_started
       payment-service:
-        condition: service_healthy
+        condition: service_started
       notification-service:
-        condition: service_healthy
+        condition: service_started
     networks:
       - ecommerce-net
     restart: on-failure
