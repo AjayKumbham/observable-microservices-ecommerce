@@ -1,0 +1,88 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        # User Service routes - public auth endpoints bypass JWT filter
+        - id: user-service-auth
+          uri: http://user-service:8081
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - StripPrefix=0
+
+        # User Service routes - protected profile endpoints
+        - id: user-service-users
+          uri: http://user-service:8081
+          predicates:
+            - Path=/api/v1/users/**
+          filters:
+            - StripPrefix=0
+            - AuthenticationFilter
+
+        # Product Service routes
+        - id: product-service
+          uri: http://product-service:8082
+          predicates:
+            - Path=/api/v1/products/**,/api/v1/categories/**
+          filters:
+            - StripPrefix=0
+            - AuthenticationFilter
+
+        # Cart Service routes
+        - id: cart-service
+          uri: http://cart-service:8083
+          predicates:
+            - Path=/api/v1/cart/**
+          filters:
+            - StripPrefix=0
+            - AuthenticationFilter
+
+        # Order Service routes
+        - id: order-service
+          uri: http://order-service:8084
+          predicates:
+            - Path=/api/v1/orders/**
+          filters:
+            - StripPrefix=0
+            - AuthenticationFilter
+
+        # Payment Service routes
+        - id: payment-service
+          uri: http://payment-service:8085
+          predicates:
+            - Path=/api/v1/payments/**
+          filters:
+            - StripPrefix=0
+            - AuthenticationFilter
+
+      default-filters:
+        - AddResponseHeader=X-Gateway-Source, api-gateway
+        - AddResponseHeader=X-Content-Type-Options, nosniff
+
+  # Global CORS for all routes
+  webflux:
+    cors:
+      enabled: true
+
+jwt:
+  secret: "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"
+  expiration: 86400000  # 24 hours in ms
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    com.ecommerce.gateway: DEBUG
