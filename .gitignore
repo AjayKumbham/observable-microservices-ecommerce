@@ -38,3 +38,4 @@ build/
 ### Others ###
 *.log
 *.sqlite
+.env
