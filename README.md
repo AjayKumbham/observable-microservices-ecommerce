@@ -359,5 +359,3 @@ JWT issued by user-service (HS256, 24h expiry)
 - **Real Payments** via Stripe/Razorpay SDK in PaymentService
 - **Real Notifications** via JavaMailSender (email) + Twilio (SMS) in NotificationService
 - **API Versioning** via path (`/api/v2/`) or header-based routing
-#   o b s e r v a b l e - m i c r o s e r v i c e s - e c o m m e r c e  
- 
