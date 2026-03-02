@@ -20,6 +20,11 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+      allow-coerce-as-scalar: false
+
 services:
   product-service:
     url: http://product-service:8082
