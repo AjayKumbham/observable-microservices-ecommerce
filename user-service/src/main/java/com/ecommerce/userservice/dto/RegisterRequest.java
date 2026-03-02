@@ -11,14 +11,17 @@ public class RegisterRequest {
 
     @NotBlank(message = "First name is required")
     @Size(min = 2, max = 100, message = "First name must be between 2 and 100 characters")
+    @Pattern(regexp = "^(?=.*\\p{L})[\\p{L}\\s\\-']+$", message = "First name must contain at least one letter and can only include letters, spaces, hyphens, and apostrophes")
     private String firstName;
 
     @NotBlank(message = "Last name is required")
     @Size(min = 2, max = 100, message = "Last name must be between 2 and 100 characters")
+    @Pattern(regexp = "^(?=.*\\p{L})[\\p{L}\\s\\-']+$", message = "Last name must contain at least one letter and can only include letters, spaces, hyphens, and apostrophes")
     private String lastName;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Must be a valid email address")
+    @Size(max = 255, message = "Email must not exceed 255 characters")
     private String email;
 
     @NotBlank(message = "Password is required")

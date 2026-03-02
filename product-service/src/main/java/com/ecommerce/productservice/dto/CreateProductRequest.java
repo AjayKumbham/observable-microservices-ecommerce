@@ -9,14 +9,17 @@ import java.math.BigDecimal;
 public class CreateProductRequest {
 
     @NotBlank(message = "Product name is required")
-    @Size(max = 200, message = "Product name cannot exceed 200 characters")
+    @Size(min = 2, max = 200, message = "Product name must be between 2 and 200 characters")
+    @Pattern(regexp = "^(?=.*\\p{L})[\\p{L}\\d\\s\\-'.&()]+$", message = "Product name contains invalid characters")
     private String name;
 
     @Size(max = 2000, message = "Description cannot exceed 2000 characters")
+    @Pattern(regexp = "^[\\p{L}\\d\\s\\-'.&(),!?;:/\\n\\r]*$", message = "Description contains invalid characters")
     private String description;
 
     @NotBlank(message = "SKU is required")
-    @Size(max = 100, message = "SKU cannot exceed 100 characters")
+    @Size(min = 3, max = 100, message = "SKU must be between 3 and 100 characters")
+    @Pattern(regexp = "^[A-Z0-9\\-]+$", message = "SKU must contain only uppercase letters, numbers, and hyphens")
     private String sku;
 
     @NotNull(message = "Price is required")

@@ -16,6 +16,8 @@ public class CreateOrderRequest {
     private Long userId;
 
     @NotBlank(message = "Shipping address is required")
+    @Size(min = 10, max = 500, message = "Shipping address must be between 10 and 500 characters")
+    @Pattern(regexp = "^[\\p{L}\\d\\s\\-'.&(),#]+$", message = "Shipping address contains invalid characters")
     private String shippingAddress;
 
     @NotNull(message = "Payment method is required")
@@ -25,5 +27,7 @@ public class CreateOrderRequest {
     @Valid
     private List<OrderItemRequest> items;
 
+    @Size(max = 500, message = "Notes cannot exceed 500 characters")
+    @Pattern(regexp = "^[\\p{L}\\d\\s\\-'.&(),!?;:]*$", message = "Notes contain invalid characters")
     private String notes;
 }
