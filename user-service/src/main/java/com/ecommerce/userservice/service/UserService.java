@@ -29,14 +29,15 @@ public class UserService {
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new UserAlreadyExistsException("User with email '" + request.getEmail() + "' already exists");
+        String normalizedEmail = request.getEmail().toLowerCase().trim();
+        if (userRepository.existsByEmail(normalizedEmail)) {
+            throw new UserAlreadyExistsException("User with email '" + normalizedEmail + "' already exists");
         }
 
         User user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
-                .email(request.getEmail())
+                .email(normalizedEmail)
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phone(request.getPhone())
                 .role(UserRole.CUSTOMER)
@@ -51,12 +52,13 @@ public class UserService {
     }
 
     public AuthResponse login(LoginRequest request) {
+        String normalizedEmail = request.getEmail().toLowerCase().trim();
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+                new UsernamePasswordAuthenticationToken(normalizedEmail, request.getPassword())
         );
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + request.getEmail()));
+        User user = userRepository.findByEmail(normalizedEmail)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + normalizedEmail));
 
         String token = jwtService.generateToken(toUserDetails(user));
         log.info("User logged in: {}", user.getEmail());
