@@ -1,8 +1,10 @@
 package com.ecommerce.cartservice.exception;
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -51,14 +53,35 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(405, ex.getMessage()));
     }
 
-    @ExceptionHandler({
-            org.springframework.http.converter.HttpMessageNotReadableException.class,
-            org.springframework.web.bind.MissingServletRequestParameterException.class
-    })
-    public ResponseEntity<ErrorResponse> handleBadRequestExceptions(Exception ex) {
-        log.warn("Bad request: {}", ex.getMessage());
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        Throwable cause = ex.getCause();
+        if (cause instanceof MismatchedInputException mie) {
+            Map<String, String> fieldErrors = new HashMap<>();
+            String fieldPath = mie.getPath().stream()
+                    .map(ref -> ref.getFieldName() != null ? ref.getFieldName() : "[" + ref.getIndex() + "]")
+                    .reduce("", (a, b) -> a.isEmpty() ? b : a + "." + b);
+            String reason = mie.getOriginalMessage();
+            fieldErrors.put(fieldPath.isEmpty() ? "request" : fieldPath, reason);
+            log.warn("Type mismatch in request body - field: '{}', reason: {}", fieldPath, reason);
+            ErrorResponse response = ErrorResponse.builder()
+                    .status(400)
+                    .message("Invalid field type in request")
+                    .timestamp(LocalDateTime.now())
+                    .errors(fieldErrors)
+                    .build();
+            return ResponseEntity.badRequest().body(response);
+        }
+        log.warn("Malformed request body: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.of(400, "Malformed or missing request data"));
+    }
+
+    @ExceptionHandler(org.springframework.web.bind.MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse> handleMissingParam(org.springframework.web.bind.MissingServletRequestParameterException ex) {
+        log.warn("Missing request parameter: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(400, "Missing required parameter: " + ex.getParameterName()));
     }
 
     @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
