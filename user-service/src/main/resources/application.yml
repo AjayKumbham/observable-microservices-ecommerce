@@ -27,7 +27,8 @@ spring:
   jackson:
     deserialization:
       fail-on-unknown-properties: true
-      allow-coerce-as-scalar: false
+    mapper:
+      allow-coercion-of-scalars: false
 
 jwt:
   secret: "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"
