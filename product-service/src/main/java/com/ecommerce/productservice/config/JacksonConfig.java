@@ -1,11 +1,13 @@
 package com.ecommerce.productservice.config;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +38,16 @@ public class JacksonConfig {
 
         @Override
         public String deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-            String value = p.getValueAsString();
+            // Reject non-string JSON tokens (numbers, booleans, arrays, objects)
+            // Only accept VALUE_STRING and VALUE_NULL tokens
+            JsonToken token = p.currentToken();
+            if (token != JsonToken.VALUE_STRING && token != JsonToken.VALUE_NULL) {
+                throw MismatchedInputException.from(p, String.class,
+                    "Expected a JSON string value but got: " + token.name().toLowerCase().replace('_', ' ') +
+                    ". Please wrap the value in quotes.");
+            }
+
+            String value = p.getText();
             if (value == null) return null;
             return shouldTrim ? value.trim() : value;
         }
@@ -51,13 +62,13 @@ public class JacksonConfig {
 
                 // Convenience layer: Skip trimming for common sensitive field names
                 String name = property.getName().toLowerCase();
-                boolean isSensitive = name.contains("password") || 
-                                    name.contains("passphrase") || 
-                                    name.contains("secret") || 
-                                    name.contains("apikey") || 
-                                    name.contains("token") || 
+                boolean isSensitive = name.contains("password") ||
+                                    name.contains("passphrase") ||
+                                    name.contains("secret") ||
+                                    name.contains("apikey") ||
+                                    name.contains("token") ||
                                     name.contains("credential");
-                
+
                 if (isSensitive) {
                     return new StringTrimmerDeserializer(false);
                 }
