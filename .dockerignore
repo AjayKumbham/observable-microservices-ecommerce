@@ -1,0 +1,57 @@
+# ============================================================
+# .dockerignore — Observable Microservices E-Commerce
+# Reduces build context to only what Maven needs:
+#   - pom.xml files
+#   - src/ directories
+# ============================================================
+
+# ----- Compiled output (biggest win) -----
+**/target/
+**/*.class
+**/*.jar
+**/*.war
+
+# ----- IDE metadata -----
+.idea/
+**/.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+**/.vscode/
+*.code-workspace
+
+# ----- OS artifacts -----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ----- Git -----
+.git/
+.gitignore
+.gitattributes
+
+# ----- Maven wrapper (not needed in Docker, we use the Maven base image) -----
+.mvn/
+mvnw
+mvnw.cmd
+
+# ----- Docker itself -----
+docker-compose.yml
+docker-compose.override.yml
+Dockerfile
+**/Dockerfile
+.dockerignore
+
+# ----- Docs & CI -----
+README.md
+*.md
+.github/
+docs/
+
+# ----- Logs -----
+*.log
+logs/
+
+# ----- Test reports -----
+**/surefire-reports/
