@@ -113,6 +113,16 @@ Each service declares its own local DTOs for inter-service calls. This avoids sh
 
 ## API Reference
 
+### OpenAPI / Swagger Documentation
+
+The entire system's API is fully documented automatically via springdoc-openapi. The API Gateway aggregates these routes, providing a single, centralized Swagger UI for all microservices.
+
+**Access it here:** `http://localhost:8080/swagger-ui.html`
+
+In the Swagger UI, use the "Select a definition" dropdown in the top right to switch between the APIs of different services (User, Product, Cart, Order, Payment, Notification) without needing to change ports.
+
+---
+
 ### Authentication — Public (no JWT required)
 
 ```
