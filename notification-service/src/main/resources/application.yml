@@ -3,6 +3,11 @@ server:
   tomcat:
     max-http-post-size: 100KB
     max-swallow-size: 100KB
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: never
+    include-exception: false
 
 spring:
   application:
