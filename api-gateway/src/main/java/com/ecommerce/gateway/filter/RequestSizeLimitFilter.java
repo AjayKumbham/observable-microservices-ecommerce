@@ -71,7 +71,9 @@ public class RequestSizeLimitFilter implements GlobalFilter, Ordered {
         body.put("message", String.format(
                 "Request payload exceeds the maximum allowed size of %dKB for this endpoint.",
                 maxSize / 1024));
-        body.put("timestamp", LocalDateTime.now().toString());
+        body.put("timestamp", LocalDateTime.now()
+                .truncatedTo(java.time.temporal.ChronoUnit.MILLIS)
+                .toString());
         body.put("errors", null);
 
         byte[] bytes;
