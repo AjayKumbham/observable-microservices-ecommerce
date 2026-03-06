@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -120,6 +121,7 @@ public class GlobalExceptionHandler {
     @lombok.Data @lombok.Builder @lombok.NoArgsConstructor @lombok.AllArgsConstructor
     public static class ErrorResponse {
         private int status; private String message;
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
         private LocalDateTime timestamp; private Map<String, String> errors;
         public static ErrorResponse of(int status, String message) {
             return ErrorResponse.builder().status(status).message(message).timestamp(LocalDateTime.now()).build();
