@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(name = "uk_users_email", columnNames = "email")
+        @UniqueConstraint(name = "uk_users_email", columnNames = "email"),
+        @UniqueConstraint(name = "uk_users_phone", columnNames = "phone")
 })
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -36,7 +37,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(length = 20)
+    @Column(nullable = false, unique = true, length = 20)
     private String phone;
 
     @Enumerated(EnumType.STRING)

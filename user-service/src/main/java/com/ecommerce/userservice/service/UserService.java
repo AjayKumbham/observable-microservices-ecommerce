@@ -31,7 +31,11 @@ public class UserService {
     public AuthResponse register(RegisterRequest request) {
         String normalizedEmail = request.getEmail().toLowerCase().trim();
         if (userRepository.existsByEmail(normalizedEmail)) {
-            throw new UserAlreadyExistsException("User with email '" + normalizedEmail + "' already exists");
+            throw new UserAlreadyExistsException("An account with this email address already exists.");
+        }
+
+        if (userRepository.existsByPhone(request.getPhone())) {
+            throw new UserAlreadyExistsException("An account with this phone number already exists.");
         }
 
         User user = User.builder()
