@@ -37,8 +37,7 @@ public class RegisterRequest {
     @Schema(example = "Password123!")
     private String password;
 
-    @NotBlank(message = "Phone number is required")
     @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Must be a valid phone number format (+919876543210)")
-    @Schema(example = "+919876543210")
+    @Schema(example = "+919876543210", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String phone;
 }

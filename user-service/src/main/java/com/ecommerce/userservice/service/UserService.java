@@ -34,7 +34,7 @@ public class UserService {
             throw new UserAlreadyExistsException("An account with this email address already exists.");
         }
 
-        if (userRepository.existsByPhone(request.getPhone())) {
+        if (request.getPhone() != null && !request.getPhone().isBlank() && userRepository.existsByPhone(request.getPhone())) {
             throw new UserAlreadyExistsException("An account with this phone number already exists.");
         }
 
