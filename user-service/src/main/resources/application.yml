@@ -1,8 +1,8 @@
 server:
   port: 8081
   tomcat:
-    max-http-post-size: 10KB
-    max-swallow-size: 10KB
+    max-http-post-size: 100KB
+    max-swallow-size: 100KB
 
 spring:
   application:

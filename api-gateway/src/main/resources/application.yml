@@ -104,6 +104,9 @@ spring:
       default-filters:
         - AddResponseHeader=X-Gateway-Source, api-gateway
         - AddResponseHeader=X-Content-Type-Options, nosniff
+        - name: RequestSize
+          args:
+            maxSize: 100KB
 
   # Global CORS for all routes
   webflux:
